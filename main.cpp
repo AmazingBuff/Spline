@@ -10,14 +10,13 @@ int main()
 			{4,2,1,5},
 			{8,7,2,10},
 			{4,8,3,6},
-
 			{6,8,4,9}
 		};
 
 	Amazing::Matrix matrix(array);
 	Amazing::TriangularMatrix l_matrix(4);
 	Amazing::TriangularMatrix u_matrix(4);
-	Amazing::SquareMatrixDecompose::LUDecompose(matrix, l_matrix, u_matrix);
+	//Amazing::SquareMatrixDecompose::LUDecompose(matrix, l_matrix, u_matrix);
 
 
 	std::vector<std::vector<double>> maa =

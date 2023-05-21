@@ -43,6 +43,16 @@ namespace Amazing
 			Not_A_Knot
 		};
 
+		[[nodiscard]] static Coefficient interpolation(double x_a, double x_b, size_t zone, const std::vector<double>& y,
+		BoundaryConditionType type = BoundaryConditionType::Natural, double a = 0.0f, double b = 0.0f)
+		{
+			std::vector<double> x(zone + 1);
+			double step = (x_b - x_a) / static_cast<double>(zone);
+			for(size_t i = 0; i < zone + 1; i++)
+				x[i] = x_a + step * static_cast<double>(i);
+			return interpolation(x, y, type, a, b);
+		}
+
 		[[nodiscard]] static Coefficient interpolation(const std::vector<double>& x, const std::vector<double>& y,
 		BoundaryConditionType type = BoundaryConditionType::Natural, double a = 0.0f, double b = 0.0f)
 		{
@@ -199,11 +209,5 @@ namespace Amazing
 
     private:
         CubicSpline() = default;
-    };
-
-
-    class EquidistanceCubicSpline
-    {
-        EquidistanceCubicSpline();
     };
 }
