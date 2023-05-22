@@ -13,9 +13,16 @@ namespace Amazing
 	class SquareMatrixDecompose
 	{
 	public:
+        //diagonal element can't be zero
+        //matrix, l_matrix and u_matrix: m x m
 		static void LUDecompose(const Matrix& matrix, TriangularMatrix& l_matrix, TriangularMatrix& u_matrix)
 		{
 			size_t dist = matrix.row();
+            if(l_matrix.col() != dist || l_matrix.row() != dist)
+                l_matrix.reset(dist);
+            if(u_matrix.col() != dist || u_matrix.row() != dist)
+                u_matrix.reset(dist);
+
 			//LU decompose
 			for(size_t i = 0; i < dist; i++)
 			{
@@ -55,5 +62,19 @@ namespace Amazing
 	private:
 		SquareMatrixDecompose() = default;
 	};
+
+
+    class MatrixDecompose
+    {
+    public:
+        //matrix: m x n
+        static void QRDecompose(const Matrix& matrix, Matrix& q, Matrix& r)
+        {
+
+        }
+
+    private:
+        MatrixDecompose() = default;
+    };
 }
 

@@ -18,17 +18,17 @@ namespace Amazing
 
 	struct Coefficient
 	{
-		std::vector<double> a;
-		std::vector<double> b;
-		std::vector<double> c;
-		std::vector<double> d;
+        Vector a;
+        Vector b;
+        Vector c;
+        Vector d;
 
 		explicit Coefficient(const size_t size)
 		{
-			a.resize(size);
-			b.resize(size);
-			c.resize(size);
-			d.resize(size);
+			a.reset(size);
+			b.reset(size);
+			c.reset(size);
+			d.reset(size);
 		}
 	};
 
@@ -43,17 +43,17 @@ namespace Amazing
 			Not_A_Knot
 		};
 
-		[[nodiscard]] static Coefficient interpolation(double x_a, double x_b, size_t zone, const std::vector<double>& y,
+		[[nodiscard]] static Coefficient interpolation(double x_a, double x_b, size_t zone, const Vector& y,
 		BoundaryConditionType type = BoundaryConditionType::Natural, double a = 0.0f, double b = 0.0f)
 		{
-			std::vector<double> x(zone + 1);
+			Vector x(zone + 1);
 			double step = (x_b - x_a) / static_cast<double>(zone);
 			for(size_t i = 0; i < zone + 1; i++)
 				x[i] = x_a + step * static_cast<double>(i);
 			return interpolation(x, y, type, a, b);
 		}
 
-		[[nodiscard]] static Coefficient interpolation(const std::vector<double>& x, const std::vector<double>& y,
+		[[nodiscard]] static Coefficient interpolation(const Vector& x, const Vector& y,
 		BoundaryConditionType type = BoundaryConditionType::Natural, double a = 0.0f, double b = 0.0f)
 		{
 			assert(x.size() == y.size());
@@ -62,7 +62,7 @@ namespace Amazing
 
 			Matrix A(dist);
 
-			std::vector<double> B(dist);
+			Vector B(dist);
 			memset(B.data(), 0, sizeof(double) * dist);
 
 			for(size_t i = 1; i < dist - 1; i++)
@@ -125,7 +125,12 @@ namespace Amazing
 			TriangularMatrix u_matrix(dist);
 			SquareMatrixDecompose::LUDecompose(A, l_matrix, u_matrix);
 
-			std::vector<double> m = u_matrix.inverse_upper() * (l_matrix.inverse_lower() * B);
+            Vector mid = l_matrix.inverse_lower() * B;
+			Vector m = u_matrix.inverse_upper() * mid;
+
+            for(size_t i = 0; i < dist - 1; i++)
+                std::cout << m[i] << ' ';
+            std::cout << std::endl;
 
 			Coefficient ret(dist - 1);
 			for(size_t i = 0; i < dist - 1; i++)
@@ -138,6 +143,22 @@ namespace Amazing
 				ret.c[i] = m[i] / 2.0f;
 				ret.d[i] = dm_i / (6.0f * h_i);
 			}
+
+            for(size_t i = 0; i < dist - 1; i++)
+                std::cout << ret.a[i] << ' ';
+            std::cout << std::endl;
+
+            for(size_t i = 0; i < dist - 1; i++)
+                std::cout << ret.b[i] << ' ';
+            std::cout << std::endl;
+
+            for(size_t i = 0; i < dist - 1; i++)
+                std::cout << ret.c[i] << ' ';
+            std::cout << std::endl;
+
+            for(size_t i = 0; i < dist - 1; i++)
+                std::cout << ret.d[i] << ' ';
+            std::cout << std::endl;
 
 			return ret;
 		}
